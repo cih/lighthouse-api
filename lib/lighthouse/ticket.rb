@@ -23,10 +23,22 @@ module Lighthouse
   #  ticket.tags.delete '@high'
   #  ticket.save
   #
+  module TicketXmlFormat
+    include ActiveResource::Formats::XmlFormat
+    extend self
+
+    def decode(xml)
+      xml.gsub!(/<total_pages>[0-9]*<\/total_pages>\n/, '') # remove total_pages
+      xml.gsub!(/<current_page>[0-9]*<\/current_page>\n/, '') # remove current_page
+      super
+    end
+  end
+
   class Ticket < Base
-    
+
     attr_writer :tags
     site_format << '/projects/:project_id'
+    self.format = TicketXmlFormat
 
     def id
       attributes['number'] ||= nil

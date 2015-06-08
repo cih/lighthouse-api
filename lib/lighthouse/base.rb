@@ -1,12 +1,12 @@
 module Lighthouse
   class Base < ActiveResource::Base
-    self.format = :xml
+    self.format = ActiveResource::Formats::XmlFormat
 
     def self.inherited(base)
       Lighthouse.resources << base
-      class << base        
+      class << base
         attr_accessor :site_format
-        
+
         def site_with_update
           Lighthouse.update_site(self)
           site_without_update
